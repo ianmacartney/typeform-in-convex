@@ -11,6 +11,9 @@
 
 import type { ApiFromModules } from "convex/api";
 import type * as getDogs from "../getDogs";
+import type * as http from "../http";
+import type * as saveTypeformResponse from "../saveTypeformResponse";
+import type * as storeUser from "../storeUser";
 
 /**
  * A type describing your app's public Convex API.
@@ -23,4 +26,7 @@ import type * as getDogs from "../getDogs";
  */
 export type API = ApiFromModules<{
   getDogs: typeof getDogs;
+  http: typeof http;
+  saveTypeformResponse: typeof saveTypeformResponse;
+  storeUser: typeof storeUser;
 }>;
