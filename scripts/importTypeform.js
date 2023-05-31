@@ -1,10 +1,10 @@
 const fs = require('fs');
 
-function mapResponseForConvex(typeformAnswers, convexFieldNameByTypeformFieldId) {
-    console.log(typeformAnswers)
+function mapResponseForConvex(response, convexFieldNameByTypeformFieldId) {
     // TOOD maybe also keep a reference to this response's typeform id for posterity?
     const convexDoc = {};
-    for (const answer of typeformAnswers) {
+
+    for (const answer of response.answers) {
         const typeformFieldId = answer.field.id;
         const convexFieldName = convexFieldNameByTypeformFieldId[typeformFieldId];
         if (convexFieldName === undefined) {
@@ -13,6 +13,14 @@ function mapResponseForConvex(typeformAnswers, convexFieldNameByTypeformFieldId)
         }
         // TODO custom mapping of these based on the field type
         convexDoc[convexFieldName] = answer[answer.type];
+    }
+    for (const hiddenField of Object.keys(response.hidden)) {
+        const convexFieldName = convexFieldNameByTypeformFieldId[hiddenField];
+        if (convexFieldName === undefined) {
+            // If we excluded this field from mappings.json, we don't want to keep the value
+            continue
+        }
+        convexDoc[convexFieldName] = response.hidden[hiddenField];
     }
     return convexDoc
 }
@@ -56,7 +64,7 @@ async function importTypeform() {
 
     const responsesJSONL = []
     for (const response of responsesData.items) {
-        responsesJSONL.push(JSON.stringify(mapResponseForConvex(response.answers, convexFieldNameByTypeformFieldId)))
+        responsesJSONL.push(JSON.stringify(mapResponseForConvex(response, convexFieldNameByTypeformFieldId)))
     }
     await fs.promises.writeFile(`./typeformData/${convexTableName}.jsonl`, responsesJSONL.join('\n'))
 

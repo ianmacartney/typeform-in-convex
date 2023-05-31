@@ -8,7 +8,7 @@ export default defineSchema({
     typeformFieldId: v.string(),
     convexFieldName: v.string(),
   }).index("by_typeform_form_id", ["typeformFormId"]),
-  dogs: defineTable(v.any()),
+  dogs: defineTable(v.any()).index("by_user_id", ["user_id"]),
   users: defineTable({
     name: v.string(),
     tokenIdentifier: v.string(),

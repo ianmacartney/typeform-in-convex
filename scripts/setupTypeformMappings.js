@@ -33,9 +33,16 @@ async function setupTypeformMappings() {
             convexFieldName: sanitizeIdentifierForConvex(typeformQuestionText)
         })
     }
+    for (const hiddenFieldName of formData.hidden ?? []) {
+        jsonOutput.fieldMappings.push({
+            typeformId: hiddenFieldName,
+            typeformQuestionText: `Hidden field named '${hiddenFieldName}'`,
+            convexFieldName: sanitizeIdentifierForConvex(hiddenFieldName),
+        })
+    }
 
     await fs.promises.mkdir('./typeformData', { recursive: true })
-    const filename = `./typeformData/mappings_${FORMID}.json`;
+    const filename = `./typeformData/mappings_${FORM_ID}.json`;
 
     await fs.promises.writeFile(filename, JSON.stringify(jsonOutput, null, 2));
 
