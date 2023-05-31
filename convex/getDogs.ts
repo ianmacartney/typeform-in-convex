@@ -21,5 +21,4 @@ export default query(async ({ db , auth}) => {
     .withIndex("by_user_id", q =>
       q.eq("user_id", user._id.toString()))
     .collect();
-
 });
