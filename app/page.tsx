@@ -3,6 +3,7 @@ import { useQuery, useMutation } from "../convex/_generated/react";
 import { Authenticated, Unauthenticated } from "convex/react";
 import { SignInButton, SignOutButton, useUser } from "@clerk/clerk-react";
 import {useState, useEffect} from "react";
+import Script from "next/script";
 
 
 function LoginPage() {
@@ -67,11 +68,10 @@ function App() {
           </div>
         </div>
       </div>
-
-      <button data-tf-slider="vX9noaqM" data-tf-position="right" data-tf-opacity="100" data-tf-iframe-props="title=Spotted a dog" data-tf-auto-close="500" data-tf-transitive-search-params="user_id" data-tf-medium="snippet" data-tf-hidden="user_id=k8rtest2" className="typeform-button">
+      <button data-tf-slider="vX9noaqM" data-tf-position="right" data-tf-opacity="100" data-tf-iframe-props="title=Spotted a dog" data-tf-auto-close="500" data-tf-transitive-search-params="user_id" data-tf-medium="snippet" data-tf-hidden={`user_id=${userId}`} className="typeform-button">
         Record a dog sighting
       </button>
-      <script src="//embed.typeform.com/next/embed.js"></script>
+      <Script src="//embed.typeform.com/next/embed.js"></Script>
     </main>
   )
 }
