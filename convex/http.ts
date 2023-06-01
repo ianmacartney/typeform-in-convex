@@ -8,9 +8,9 @@ const http = httpRouter();
 
 const typeformWebhook = httpAction(async ({ runMutation }, request) => {
   const typeformResponse = await request.json();
-  const {form_id: formId, answers} = typeformResponse.form_response;
+  const {form_id: formId, answers, hidden} = typeformResponse.form_response;
 
-  await runMutation('saveTypeformResponse', {formId, answers})
+  await runMutation('saveTypeformResponse', {formId, answers, hidden})
 
 
   return new Response(null, {
