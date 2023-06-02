@@ -7,8 +7,6 @@ import Script from "next/script";
 import 'chart.js/auto';
 import { Pie } from "react-chartjs-2";
 
-
-
 function LoginPage() {
   return (
     <main>

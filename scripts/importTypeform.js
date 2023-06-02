@@ -11,8 +11,11 @@ function mapResponseForConvex(response, convexFieldNameByTypeformFieldId) {
             // If we excluded this field from mappings.json, we don't want to keep the value
             continue
         }
-        // TODO custom mapping of these based on the field type
-        convexDoc[convexFieldName] = answer[answer.type];
+        if (answer.type === 'choice' || answer.type === 'choices') {
+            convexDoc[convexFieldName] = answer[answer.type].label;
+        } else {
+            convexDoc[convexFieldName] = answer[answer.type];
+        }
     }
     for (const hiddenField of Object.keys(response.hidden)) {
         const convexFieldName = convexFieldNameByTypeformFieldId[hiddenField];
@@ -40,6 +43,7 @@ async function importTypeform() {
     for (const field of fieldMappings) {
         const {typeformId: typeformFieldId, convexFieldName} = field
         convexFieldNameByTypeformFieldId[typeformFieldId] = convexFieldName;
+        // TODO detect duplicate field names
         typeformMetadataJSONL.push(JSON.stringify({
             typeformFormId,
             convexTableName,

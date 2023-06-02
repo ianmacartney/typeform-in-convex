@@ -1,13 +1,21 @@
 import {internalAction, internalMutation, mutation} from "./_generated/server";
 import {Id, TableNames} from "./_generated/dataModel";
 
-type Answer = ChoiceAnswer | TextAnswer | BooleanAnswer | NumberAnswer | FileUploadAnswer;
+type Answer = ChoiceAnswer | ChoicesAnswer | BooleanAnswer | NumberAnswer | FileUploadAnswer | StringAnswer<StringAnswerTypes>;
+
+type StringAnswerTypes = 'text' | 'email' | 'url' | 'date' | 'payment'
 
 type ChoiceAnswer = {type: 'choice'; choice: {label: string}} & FieldData
-type TextAnswer = {type: 'text'; text: string} & FieldData
+type ChoicesAnswer = {type: 'choices'; choices: {label: string}} & FieldData
 type BooleanAnswer = {type: 'boolean'; boolean: boolean} & FieldData
 type NumberAnswer = {type: 'number'; number: number} & FieldData
 type FileUploadAnswer = {type: 'file_url'; file_url: string} & FieldData
+type StringAnswer<AnswerType extends StringAnswerTypes> = {
+  [key in AnswerType]: string;
+} & {
+  type: AnswerType;
+} & FieldData
+
 
 type FieldData = {
   field: { id: string; type: string; ref: string; }
@@ -44,14 +52,43 @@ export default mutation(async ({db, scheduler}, {formId, answers, hidden}: Typef
       // If we excluded this field from the typeform_metadata table, we don't want to keep the value
       continue
     }
-    if (answer.type === 'file_url') {
-      const fileUrl = answer.file_url;
-      fileUrlByConvexFieldName[convexFieldName] = fileUrl;
-    } else {
-      // @ts-ignore TODO figure out how to model typeform's types here so this doesn't complain
-      const convexFieldValue = answer[answer.type]
-      convexDoc[convexFieldName] = convexFieldValue;
+    switch (answer.type) {
+      case 'file_url':
+        fileUrlByConvexFieldName[convexFieldName] = answer.file_url;
+        break;
+      case 'text':
+        convexDoc[convexFieldName] = answer.text;
+        break;
+      case 'choice':
+        convexDoc[convexFieldName] = answer.choice.label;
+        break;
+      case 'choices':
+        convexDoc[convexFieldName] = answer.choices.label;
+        break;
+      case 'email':
+        convexDoc[convexFieldName] = answer.email;
+        break;
+      case 'url':
+        convexDoc[convexFieldName] = answer.url;
+        break;
+      case 'date':
+        convexDoc[convexFieldName] = answer.date;
+        break;
+      case 'payment':
+        convexDoc[convexFieldName] = answer.payment;
+        break;
+      case 'boolean':
+        convexDoc[convexFieldName] = answer.boolean;
+        break;
+      case 'number':
+        convexDoc[convexFieldName] = answer.number;
+        break;
+      default:
+        // if we don't know how to read this question type, log it but succeed anyways
+        // @ts-ignore This is to catch a case that's not modeled in our types
+        console.log(`unsupported question type ${answer.type}`)
     }
+
   }
   for (const hiddenField of Object.keys(hidden)) {
     const convexFieldName = convexFieldNameByTypeformFieldId[hiddenField];
