@@ -40,16 +40,22 @@ async function importTypeform() {
     // convex will have a typeform_metadata table with schema
     const typeformMetadataJSONL = [];
     const convexFieldNameByTypeformFieldId = {}
+    const allFieldNames = new Set();
     for (const field of fieldMappings) {
         const {typeformId: typeformFieldId, convexFieldName} = field
-        convexFieldNameByTypeformFieldId[typeformFieldId] = convexFieldName;
-        // TODO detect duplicate field names
-        typeformMetadataJSONL.push(JSON.stringify({
-            typeformFormId,
-            convexTableName,
-            typeformFieldId,
-            convexFieldName,
-        }))
+        if (allFieldNames.has(convexFieldName)) {
+            console.warn(`Multiple fields would be named \"${convexFieldName}\" -- please rename in ${mappingsFilename}`);
+            return "Field name collision"
+        } else {
+            convexFieldNameByTypeformFieldId[typeformFieldId] = convexFieldName;
+            typeformMetadataJSONL.push(JSON.stringify({
+                typeformFormId,
+                convexTableName,
+                typeformFieldId,
+                convexFieldName,
+            }))
+            allFieldNames.add(convexFieldName)
+        }
     }
 
     await fs.promises.writeFile(`./typeformData/typeform_metadata.jsonl`, typeformMetadataJSONL.join('\n'))
