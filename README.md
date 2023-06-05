@@ -3,28 +3,30 @@ This is an example app using Typeform as a way to get data into a Convex project
 The frontend (in `/app`) is custom to my specific example app, a dog-spotting "social media" app 
 using a Typeform to collect the dogs users have seen.
 
-On the other hand, there are several reusable/general pieces that you could use for your own 
-Typeform integration:
+If you want to reuse some pieces of this to add your own Typeform integration, here's what you need:
 
-Define how you want to map Typeform questions to Convex fields using 
+## Import existing typeform reponses
 
-`node scripts/setupTypeformMappings.js`
+`node scripts/setupTypeformMappings.js [form_id]`
 
-Save your mappings in Convex and migrate all responses that have already been submitted to your Typeform with
+Edit `typeformData/mappings_[form_id].json` to have the table name and field names you want
 
 `node scripts/importTypeform.js`
 
-To save new responses as they come into your typeform:
+Copy and past the `npx convex import` statements to import the responses and necessary metadata
 
-- Copy `convex/saveTypeformResponse.ts` and `convex/https.ts` into to your project 
+## Set up Typeform->Convex webhook
 
-Set up a [webhook](https://www.typeform.com/help/a/webhooks-360029573471/) in Typeform 
-(via the UI or their [API](https://www.typeform.com/developers/webhooks/reference/create-or-update-webhook/))
-The endpoint URL will be `https://<your_convex_url>/typeformWebhook`
+To save new responses as they come into your typeform using a [webhook](https://www.typeform.com/help/a/webhooks-360029573471/):
+
+Copy `convex/saveTypeformResponse.ts`, `convex/authenticateTypeformWebhook.ts`, and `convex/https.ts` into to your project 
+
+`npx convex dev`
+
+`node scripts/setupWebhook.js --form-id [form_id] --deployment_url [convex_deployment_url]`
+
 (find your prod or dev convex URL in `.env` or `.env.local` respectively)
 
 
-In the future I plan to support:
 
-- All the different typeform question types
 
