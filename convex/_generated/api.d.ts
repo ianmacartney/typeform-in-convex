@@ -10,6 +10,7 @@
  */
 
 import type { ApiFromModules } from "convex/api";
+import type * as authenticateTypeformWebhook from "../authenticateTypeformWebhook";
 import type * as getDogSummary from "../getDogSummary";
 import type * as getDogs from "../getDogs";
 import type * as http from "../http";
@@ -26,6 +27,7 @@ import type * as storeUser from "../storeUser";
  * `ConvexReactClient` to create app-specific types.
  */
 export type API = ApiFromModules<{
+  authenticateTypeformWebhook: typeof authenticateTypeformWebhook;
   getDogSummary: typeof getDogSummary;
   getDogs: typeof getDogs;
   http: typeof http;
