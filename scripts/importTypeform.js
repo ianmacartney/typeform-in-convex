@@ -53,8 +53,8 @@ async function importTypeform() {
     }
 
     await fs.promises.writeFile(`./typeformData/typeform_metadata.jsonl`, typeformMetadataJSONL.join('\n'))
-    console.log(`Add your typeform field mappings to convex with 
-        npx convex import typeform_metadata ./typeformData/typeform_metadata.jsonl
+    console.log(`Add your typeform field mappings to convex with\n
+npx convex import typeform_metadata ./typeformData/typeform_metadata.jsonl\n
     If you already have some forms working, use --append to keep their mappings and add these`)
 
 
@@ -72,8 +72,8 @@ async function importTypeform() {
     }
     await fs.promises.writeFile(`./typeformData/${convexTableName}.jsonl`, responsesJSONL.join('\n'))
 
-    console.log(`Add all existing responses to the ${convexTableName} table with 
-        npx convex import ${convexTableName} ./typeformData/${convexTableName}.jsonl
+    console.log(`Add all existing responses to the ${convexTableName} table with\n
+npx convex import ${convexTableName} ./typeformData/${convexTableName}.jsonl\n
     To add to existing data use --append; to overwrite any existing data use --replace`)
 
 
