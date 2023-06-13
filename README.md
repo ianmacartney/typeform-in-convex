@@ -22,7 +22,7 @@ To save new responses as they come into your typeform using a [webhook](https://
 1. Copy `convex/saveTypeformResponse.ts`, `convex/authenticateTypeformWebhook.ts`, and `convex/https.ts` into to your project 
 2. Run `npx convex dev`
 3. Find your prod or dev convex URL in `.env` or `.env.local` respectively
-4. Run `node scripts/setupWebhook.js --form-id [form_id] --deployment_url [convex_deployment_url]`
+4. Run `node scripts/setupWebhook.js --form-id [form_id] --deployment-url [convex_deployment_url]`
 5. Test your webhook by filling out your form, or by sending a test webhook [(step 6 here)](https://www.typeform.com/help/a/webhooks-360029573471/)
 
 
