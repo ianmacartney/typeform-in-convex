@@ -1,11 +1,12 @@
 "use client";
-import { useQuery, useMutation } from "../convex/_generated/react";
+import { useQuery, useMutation } from "convex/react";
 import { Authenticated, Unauthenticated } from "convex/react";
 import { SignInButton, SignOutButton, useUser } from "@clerk/clerk-react";
 import { useState, useEffect } from "react";
 import Script from "next/script";
 import "chart.js/auto";
 import { Pie } from "react-chartjs-2";
+import { api } from "@/convex/_generated/api";
 
 function LoginPage() {
   return (
@@ -19,13 +20,13 @@ function LoginPage() {
 }
 
 function YourDogs() {
-  const dogs = useQuery("getDogs");
+  const dogs = useQuery(api.app.getDogs);
   return (
     <div className="flex flex-col items-center w-full justify-center">
       <p className="mb-8">Your dogs</p>
       <div className="border-b border-gray-300 bg-gradient-to-b from-zinc-200 pb-6 pt-8 backdrop-blur-2xl dark:border-neutral-800 dark:bg-zinc-800/30 dark:from-inherit lg:static lg:w-auto  lg:rounded-xl lg:border lg:bg-gray-200 lg:p-4 lg:dark:bg-zinc-800/30">
         {dogs?.map(({ _id, name, breed, url }) => (
-          <div key={_id.toString()}>
+          <div key={_id}>
             <p>
               {name ? `${name} the ` : "A "}
               {breed}
@@ -39,7 +40,7 @@ function YourDogs() {
 }
 
 function AllDogs() {
-  const dogSummary = useQuery("getDogSummary");
+  const dogSummary = useQuery(api.app.getDogSummary);
 
   const byLocationData = {
     labels: dogSummary?.byLocation?.map(({ location }) => location),

@@ -20,7 +20,7 @@ If you want to reuse some pieces of this to add your own Typeform integration, h
 To save new responses as they come into your typeform using a [webhook](https://www.typeform.com/help/a/webhooks-360029573471/):
 
 0. Run steps 1-7 above to import necessary metadata
-1. Copy `convex/saveTypeformResponse.ts`, `convex/authenticateTypeformWebhook.ts`, and `convex/https.ts` into to your project 
+1. Copy `convex/typeform.ts`, `convex/authenticateTypeformWebhook.ts`, and `convex/https.ts` into to your project 
 2. Run `npx convex dev`
 3. Find your prod or dev convex URL in `.env` or `.env.local` respectively
 4. Run `node scripts/setupWebhook.js --form-id [form_id] --deployment-url [convex_deployment_url]`

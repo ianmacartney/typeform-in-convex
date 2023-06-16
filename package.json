@@ -16,7 +16,7 @@
     "autoprefixer": "10.4.14",
     "chart.js": "^4.3.0",
     "commander": "^10.0.1",
-    "convex": "^0.14.1",
+    "convex": "^0.17.0",
     "eslint": "8.41.0",
     "eslint-config-next": "13.4.3",
     "next": "13.4.3",

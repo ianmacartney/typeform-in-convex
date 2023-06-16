@@ -4,6 +4,7 @@ import {
   mutation,
 } from "./_generated/server";
 import { Id, TableNames } from "./_generated/dataModel";
+import { api } from "./_generated/api";
 
 type Answer =
   | ChoiceAnswer
@@ -39,7 +40,7 @@ type TypeformPayload = {
   hidden: { [k: string]: string };
 };
 
-export default mutation(
+export const saveResponse = mutation(
   async ({ db, scheduler }, { formId, answers, hidden }: TypeformPayload) => {
     const fieldMappings = await db
       .query("typeform_metadata")
@@ -111,7 +112,7 @@ export default mutation(
       convexDoc[convexFieldName] = hidden[hiddenField];
     }
     const docId = await db.insert(convexTableName, convexDoc);
-    await scheduler.runAfter(0, "saveTypeformResponse:fetchFiles", {
+    await scheduler.runAfter(0, api.typeform.fetchFiles, {
       docId,
       fileUrlByConvexFieldName,
     });
@@ -137,7 +138,7 @@ export const fetchFiles = internalAction(
       const file = await fileResponse.blob();
       storageIdByConvexFieldName[convexFieldName] = await storage.store(file);
     }
-    await runMutation("saveTypeformResponse:saveFiles", {
+    await runMutation(api.typeform.saveFiles, {
       docId,
       storageIdByConvexFieldName,
     });

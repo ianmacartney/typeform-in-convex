@@ -3,7 +3,7 @@ import { internalAction } from "./_generated/server";
 import crypto from "crypto";
 
 type ValidationArgs = { requestBodyString?: string; signature?: string | null };
-export default internalAction(
+export const authenticate = internalAction(
   ({ runMutation }, { requestBodyString, signature }: ValidationArgs) => {
     const typeformSecretToken = process.env.TYPEFORM_SECRET_TOKEN;
     if (!typeformSecretToken) {
