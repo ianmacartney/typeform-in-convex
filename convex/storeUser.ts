@@ -21,7 +21,7 @@ export default mutation(async ({ db, auth }) => {
   // Check if we've already stored this identity before.
   const user = await db
     .query("users")
-    .withIndex("by_token", q =>
+    .withIndex("by_token", (q) =>
       q.eq("tokenIdentifier", identity.tokenIdentifier)
     )
     .unique();
