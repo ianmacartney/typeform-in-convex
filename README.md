@@ -9,7 +9,7 @@ If you want to reuse some pieces of this to add your own Typeform integration, h
 
 1. Get a Typeform [API key](https://www.typeform.com/developers/get-started/personal-access-token/)
 2. Run `export TYPEFORM_API_KEY=[your_api_key]`
-3. Get your Typeform form ID from the url
+3. Get your Typeform form_id from the url, eg for https://mysite.typeform.com/to/u6nXL7 the form_id is `u6nXL7`
 4. Run `node scripts/setupTypeformMappings.js [form_id]`
 5. Edit `typeformData/mappings_[form_id].json` to have the table name and field names you want
 6. Run `node scripts/importTypeform.js [form_id]`
