@@ -4,7 +4,7 @@ import crypto from "crypto";
 
 type ValidationArgs = { requestBodyString?: string; signature?: string | null };
 export const authenticate = internalAction(
-  ({ runMutation }, { requestBodyString, signature }: ValidationArgs) => {
+  ({}, { requestBodyString, signature }: ValidationArgs) => {
     const typeformSecretToken = process.env.TYPEFORM_SECRET_TOKEN;
     if (!typeformSecretToken) {
       console.error(
