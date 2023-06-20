@@ -1,9 +1,11 @@
 This is an example app using Typeform as a way to get data into a Convex project!
 
 The frontend (in `/app`) is custom to my specific example app, a dog-spotting "social media" app 
-using a Typeform to collect the dogs users have seen.
+using a Typeform to collect the dogs users have seen. It's here for developing the scripts and 
+Convex functions for Typeform integration, but isn't itself reusable since it's tightly coupled to
+my specific example Typeform.
 
-If you want to reuse some pieces of this to add your own Typeform integration, here's what you need:
+Here's how to use the general tools/scripts/functions in this repo to add your own Typeform integration
 
 ## Import existing typeform responses
 
