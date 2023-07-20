@@ -4,7 +4,7 @@ import {
   mutation,
 } from "./_generated/server";
 import { Id, TableNames } from "./_generated/dataModel";
-import { api } from "./_generated/api";
+import { internal } from "./_generated/api";
 
 type Answer =
   | ChoiceAnswer
@@ -41,8 +41,8 @@ type TypeformPayload = {
 };
 
 export const saveResponse = mutation(
-  async ({ db, scheduler }, { formId, answers, hidden }: TypeformPayload) => {
-    const fieldMappings = await db
+  async (ctx, { formId, answers, hidden }: TypeformPayload) => {
+    const fieldMappings = await ctx.db
       .query("typeform_metadata")
       .withIndex("by_typeform_form_id", (q) => q.eq("typeformFormId", formId))
       .collect();
@@ -111,8 +111,8 @@ export const saveResponse = mutation(
       }
       convexDoc[convexFieldName] = hidden[hiddenField];
     }
-    const docId = await db.insert(convexTableName, convexDoc);
-    await scheduler.runAfter(0, api.typeform.fetchFiles, {
+    const docId = await ctx.db.insert(convexTableName, convexDoc);
+    await ctx.scheduler.runAfter(0, internal.typeform.fetchFiles, {
       docId,
       fileUrlByConvexFieldName,
     });
@@ -138,7 +138,7 @@ export const fetchFiles = internalAction(
       const file = await fileResponse.blob();
       storageIdByConvexFieldName[convexFieldName] = await storage.store(file);
     }
-    await runMutation(api.typeform.saveFiles, {
+    await runMutation(internal.typeform.saveFiles, {
       docId,
       storageIdByConvexFieldName,
     });
@@ -151,7 +151,7 @@ type SaveFilesArgs = {
 };
 
 export const saveFiles = internalMutation(
-  async ({ db }, { docId, storageIdByConvexFieldName }: SaveFilesArgs) => {
-    await db.patch(docId, storageIdByConvexFieldName);
+  async (ctx, { docId, storageIdByConvexFieldName }: SaveFilesArgs) => {
+    await ctx.db.patch(docId, storageIdByConvexFieldName);
   }
 );

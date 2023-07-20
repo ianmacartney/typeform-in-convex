@@ -1,12 +1,12 @@
 import { query } from "./_generated/server";
 
-export const getDogs = query(async ({ db, storage, auth }) => {
-  const identity = await auth.getUserIdentity();
+export const getDogs = query(async (ctx) => {
+  const identity = await ctx.auth.getUserIdentity();
   if (!identity) {
     throw new Error("Unauthenticated call to getDogs");
   }
 
-  const user = await db
+  const user = await ctx.db
     .query("users")
     .withIndex("by_token", (q) =>
       q.eq("tokenIdentifier", identity.tokenIdentifier)
@@ -16,7 +16,7 @@ export const getDogs = query(async ({ db, storage, auth }) => {
     throw new Error("Unauthenticated call to getDogs");
   }
 
-  const myDogs = await db
+  const myDogs = await ctx.db
     .query("dogs")
     .withIndex("by_user_id", (q) => q.eq("user_id", user._id))
     .collect();
@@ -24,13 +24,13 @@ export const getDogs = query(async ({ db, storage, auth }) => {
   return Promise.all(
     myDogs.map(async (dog) => ({
       ...dog,
-      ...(dog.file ? { url: await storage.getUrl(dog.file) } : {}),
+      ...(dog.file ? { url: await ctx.storage.getUrl(dog.file) } : {}),
     }))
   );
 });
 
-export const getDogSummary = query(async ({ db }) => {
-  const allDogs = await db.query("dogs").collect();
+export const getDogSummary = query(async (ctx) => {
+  const allDogs = await ctx.db.query("dogs").collect();
   const countByLocation: { [k in string]: number } = {};
   for (const dog of allDogs) {
     const loc = dog.location;
