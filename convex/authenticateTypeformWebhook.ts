@@ -1,10 +1,14 @@
 "use node";
+import { v } from "convex/values";
 import { internalAction } from "./_generated/server";
 import crypto from "crypto";
 
-type ValidationArgs = { requestBodyString?: string; signature?: string | null };
-export const authenticate = internalAction(
-  (ctx, { requestBodyString, signature }: ValidationArgs) => {
+export const authenticate = internalAction({
+  args: {
+    requestBodyString: v.optional(v.string()),
+    signature: v.union(v.string(), v.null()),
+  },
+  handler: (_, { requestBodyString, signature }) => {
     const typeformSecretToken = process.env.TYPEFORM_SECRET_TOKEN;
     if (!typeformSecretToken) {
       console.error(
@@ -20,5 +24,5 @@ export const authenticate = internalAction(
       .update(requestBodyString.toString())
       .digest("base64");
     return signature === `sha256=${hash}`;
-  }
-);
+  },
+});

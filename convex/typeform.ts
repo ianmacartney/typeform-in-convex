@@ -40,8 +40,8 @@ type TypeformPayload = {
   hidden: { [k: string]: string };
 };
 
-export const saveResponse = mutation(
-  async (ctx, { formId, answers, hidden }: TypeformPayload) => {
+export const saveResponse = mutation({
+  handler: async (ctx, { formId, answers, hidden }: TypeformPayload) => {
     const fieldMappings = await ctx.db
       .query("typeform_metadata")
       .withIndex("by_typeform_form_id", (q) => q.eq("typeformFormId", formId))
@@ -116,18 +116,15 @@ export const saveResponse = mutation(
       docId,
       fileUrlByConvexFieldName,
     });
-  }
-);
+  },
+});
 
 type FetchFilesArgs = {
   docId: Id<TableNames>;
   fileUrlByConvexFieldName: { [k: string]: string };
 };
-export const fetchFiles = internalAction(
-  async (
-    { storage, runMutation },
-    { docId, fileUrlByConvexFieldName }: FetchFilesArgs
-  ) => {
+export const fetchFiles = internalAction({
+  handler: async (ctx, { docId, fileUrlByConvexFieldName }: FetchFilesArgs) => {
     const storageIdByConvexFieldName: { [k: string]: string } = {};
     for (const convexFieldName of Object.keys(fileUrlByConvexFieldName)) {
       const fileUrl = fileUrlByConvexFieldName[convexFieldName];
@@ -136,22 +133,27 @@ export const fetchFiles = internalAction(
         throw new Error(`failed to downlaod: ${fileResponse.statusText}`);
       }
       const file = await fileResponse.blob();
-      storageIdByConvexFieldName[convexFieldName] = await storage.store(file);
+      storageIdByConvexFieldName[convexFieldName] = await ctx.storage.store(
+        file
+      );
     }
-    await runMutation(internal.typeform.saveFiles, {
+    await ctx.runMutation(internal.typeform.saveFiles, {
       docId,
       storageIdByConvexFieldName,
     });
-  }
-);
+  },
+});
 
 type SaveFilesArgs = {
   docId: Id<TableNames>;
   storageIdByConvexFieldName: { [k: string]: string };
 };
 
-export const saveFiles = internalMutation(
-  async (ctx, { docId, storageIdByConvexFieldName }: SaveFilesArgs) => {
+export const saveFiles = internalMutation({
+  handler: async (
+    ctx,
+    { docId, storageIdByConvexFieldName }: SaveFilesArgs
+  ) => {
     await ctx.db.patch(docId, storageIdByConvexFieldName);
-  }
-);
+  },
+});
